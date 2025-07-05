@@ -557,5 +557,102 @@ function salvarPDF() {
   html2pdf().from(document.body).save('relatorio_ncm.pdf');
 }
 </script>
+
+<script>
+function simularBuscaFornecedor(pais, ncm) {
+  const overlay = document.createElement("div");
+  overlay.id = "overlayBusca";
+  overlay.style.position = "fixed";
+  overlay.style.top = 0;
+  overlay.style.left = 0;
+  overlay.style.width = "100%";
+  overlay.style.height = "100%";
+  overlay.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+  overlay.style.zIndex = 9999;
+  overlay.style.display = "flex";
+  overlay.style.flexDirection = "column";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.innerHTML = `
+    <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Rotating_earth_%28large%29.gif"
+         style="width:180px; animation: blink 1s infinite;">
+    <p style="font-size:22px; font-weight:bold; margin-top:20px;">Verlaz está buscando fornecedores...</p>
+  `;
+  document.body.appendChild(overlay);
+
+  setTimeout(() => {
+    overlay.remove();
+    mostrarFornecedores(pais, ncm);
+  }, 4000);
+}
+
+function mostrarFornecedores(pais, ncm) {
+  const fornecedores = [
+    { pais, nome:'Cavabianca', site:'https://www.cavabianca.com.ar/', whatsapp:'--', email:'info@cavabianca.com.ar' },
+    { pais, nome:'Pistacuy', site:'https://www.pistacuy.com.ar/', whatsapp:'+54 11 5218‑5656', email:'--' },
+    { pais, nome:'Finca Richeze', site:'https://www.fincaricheze.com/', whatsapp:'+54 9 2645 20‑7102', email:'info@fincaricheze.com' },
+    { pais, nome:'Meló Agroindustrias', site:'https://meloagroindustrias.com/', whatsapp:'+54 264 425‑0240', email:'--' }
+  ];
+
+  document.body.innerHTML = "";
+  const section = document.createElement("section");
+
+  const btn = document.createElement("button");
+  btn.textContent = "← Voltar";
+  btn.style = "margin: 20px; padding: 10px 15px; font-size: 14px; cursor: pointer;";
+  btn.onclick = () => location.reload();
+  section.appendChild(btn);
+
+  const title = document.createElement("h2");
+  title.textContent = `Fornecedores de ${ncm} na ${pais}`;
+  title.style.textAlign = "center";
+  section.appendChild(title);
+
+  const wrapper = document.createElement("div");
+  wrapper.style = "display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px;";
+
+  fornecedores.forEach(f => {
+    const card = document.createElement("div");
+    card.style = "border: 1px solid #ccc; border-radius: 8px; padding: 15px; width: 260px; background: #fff;";
+    card.innerHTML = `
+      <h3>${f.nome}</h3>
+      <p><strong>País:</strong> ${f.pais}</p>
+      <p><strong>Site:</strong> <a href="${f.site}" target="_blank">${f.site}</a></p>
+      <p><strong>WhatsApp:</strong> ${f.whatsapp}</p>
+      <p><strong>Email:</strong> ${f.email}</p>
+    `;
+    wrapper.appendChild(card);
+  });
+
+  section.appendChild(wrapper);
+  document.body.appendChild(section);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  let tipoAtual = "Importação";
+  const tabela = document.getElementById("resultado");
+  if (!tabela) return;
+
+  // detecta o tipo de busca atual
+  const btnImport = document.querySelector(".btn-import");
+  btnImport.addEventListener("click", () => tipoAtual = "Importação");
+  const btnExport = document.querySelector(".btn-export");
+  btnExport.addEventListener("click", () => tipoAtual = "Exportação");
+
+  tabela.addEventListener("click", e => {
+    if (e.target.tagName === "A" && tipoAtual === "Importação") {
+      e.preventDefault();
+      const pais = e.target.textContent.trim();
+      const ncm = document.getElementById("ncm")?.value || "Uvas Passas";
+      simularBuscaFornecedor(pais, ncm);
+    }
+  });
+});
+</script>
+
+<style>
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
+</style>
+
 </body>
 </html>

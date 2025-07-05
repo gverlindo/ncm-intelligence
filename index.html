@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -68,6 +67,24 @@
     .btn-action {
       background: #777;
     }
+    .btn-fornecedores {
+      background: #007bff;
+      padding: 12px 25px;
+      font-size: 16px;
+      font-weight: bold;
+      margin: 20px auto;
+      display: none;
+      border-radius: 8px;
+    }
+    .btn-fornecedores.ativo {
+      display: block;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { background-color: #007bff; }
+      50% { background-color: #0056b3; }
+      100% { background-color: #007bff; }
+    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -89,6 +106,14 @@
       font-size: 10px;
       position: absolute;
       right: 5px;
+    }
+    .checkbox-col {
+      width: 50px;
+    }
+    .checkbox-col input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+      transform: scale(1.2);
     }
     canvas {
       margin-top: 15px;
@@ -122,6 +147,102 @@
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50% { opacity: 0; }
+    }
+    @keyframes blinkSlow {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    
+    /* Estilos para a tela de fornecedores */
+    .fornecedores-container {
+      padding: 20px;
+    }
+    .pais-section {
+      margin-bottom: 40px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      background: #fff;
+    }
+    .pais-title {
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+      text-align: center;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 10px;
+    }
+    .fornecedores-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .fornecedor-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      background: #f8f9fa;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .fornecedor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    .fornecedor-nome {
+      font-size: 18px;
+      font-weight: bold;
+      color: #007bff;
+      margin-bottom: 10px;
+    }
+    .fornecedor-info {
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+    .fornecedor-info strong {
+      color: #333;
+    }
+    .fornecedor-info a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .fornecedor-info a:hover {
+      text-decoration: underline;
+    }
+    .botoes-fornecedores {
+      text-align: center;
+      margin: 30px 0;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+    }
+    .btn-voltar {
+      background: #6c757d;
+      color: white;
+      padding: 12px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn-contratar {
+      background: #28a745;
+      color: white;
+      padding: 12px 25px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .btn-voltar:hover {
+      background: #5a6268;
+    }
+    .btn-contratar:hover {
+      background: #218838;
     }
   </style>
 </head>
@@ -188,61 +309,59 @@
 
   <h3 id="descNcmResult" style="text-align:center; margin-top:20px;"></h3>
 
-<p id="descTexto" style="text-align:center; font-weight:bold; margin-bottom:10px;"></p>
-<div id="cardsResultado" style="display:none;">
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
-    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 300px;">
-      <strong>DADOS DA PESQUISA</strong><br><br>
-      <strong>NCM:</strong> <span id="ncm_card">-</span><br>
-      <strong>Descrição:</strong> Suéteres, pulôveres, cardigãs, coletes e artigos semelhantes, de malha, de fibras sintéticas ou artificiais<br>
-      <strong>Período Inicial:</strong> 01/2025<br>
-      <strong>Período Final:</strong> 06/2025<br>
-      <strong>Unidade Medida:</strong> Número (Unidade)
-    </div>
+  <p id="descTexto" style="text-align:center; font-weight:bold; margin-bottom:10px;"></p>
+  <div id="cardsResultado" style="display:none;">
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
+      <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 300px;">
+        <strong>DADOS DA PESQUISA</strong><br><br>
+        <strong>NCM:</strong> <span id="ncm_card">-</span><br>
+        <strong>Descrição:</strong> Suéteres, pulôveres, cardigãs, coletes e artigos semelhantes, de malha, de fibras sintéticas ou artificiais<br>
+        <strong>Período Inicial:</strong> 01/2025<br>
+        <strong>Período Final:</strong> 06/2025<br>
+        <strong>Unidade Medida:</strong> Número (Unidade)
+      </div>
 
-    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 250px;">
-      <strong>TRATAMENTO TRIBUTÁRIO</strong>
-      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-        <tr><td style="border: 1px solid #ccc; padding: 5px;">II</td><td style="border: 1px solid #ccc; padding: 5px;">35%</td></tr>
-        <tr><td style="border: 1px solid #ccc; padding: 5px;">IPI</td><td style="border: 1px solid #ccc; padding: 5px;">0%</td></tr>
-        <tr><td style="border: 1px solid #ccc; padding: 5px;">PIS</td><td style="border: 1px solid #ccc; padding: 5px;">2,60%</td></tr>
-        <tr><td style="border: 1px solid #ccc; padding: 5px;">COFINS</td><td style="border: 1px solid #ccc; padding: 5px;">9,65%</td></tr>
-      </table>
-    </div>
+      <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 250px;">
+        <strong>TRATAMENTO TRIBUTÁRIO</strong>
+        <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+          <tr><td style="border: 1px solid #ccc; padding: 5px;">II</td><td style="border: 1px solid #ccc; padding: 5px;">35%</td></tr>
+          <tr><td style="border: 1px solid #ccc; padding: 5px;">IPI</td><td style="border: 1px solid #ccc; padding: 5px;">0%</td></tr>
+          <tr><td style="border: 1px solid #ccc; padding: 5px;">PIS</td><td style="border: 1px solid #ccc; padding: 5px;">2,60%</td></tr>
+          <tr><td style="border: 1px solid #ccc; padding: 5px;">COFINS</td><td style="border: 1px solid #ccc; padding: 5px;">9,65%</td></tr>
+        </table>
+      </div>
 
-    <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 250px;">
-      <strong>TRATAMENTO ADMINISTRATIVO</strong>
-      <ul style="margin-top: 10px;">
-        <li>INMETRO</li>
-        <li>MAPA</li>
-        <li>DECEX</li>
-        <li>ANVISA</li>
-        <li>IBAMA</li>
-      </ul>
+      <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; width: 250px;">
+        <strong>TRATAMENTO ADMINISTRATIVO</strong>
+        <ul style="margin-top: 10px;">
+          <li>INMETRO</li>
+          <li>MAPA</li>
+          <li>DECEX</li>
+          <li>ANVISA</li>
+          <li>IBAMA</li>
+        </ul>
+      </div>
     </div>
   </div>
-</div>
 
-  
-<div id="verlazAviso" style="display:none; background-color:#c00; color:white; text-align:center;
-padding:10px; font-size:16px; font-weight:bold; margin-top:20px; animation: blinkSlow 1.5s infinite;">
-Verlaz buscar fornecedores em 1 clique. Clique no seu País de Interesse
-</div>
-<style>
-@keyframes blinkSlow {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
-</style>
+  <div id="verlazAviso" style="display:none; background-color:#c00; color:white; text-align:center;
+  padding:10px; font-size:16px; font-weight:bold; margin-top:20px; animation: blinkSlow 1.5s infinite;">
+  Verlaz buscar fornecedores em 1 clique. Selecione os países de interesse e clique em "Pesquisar Fornecedores"
+  </div>
 
-<table id="resultado">
+  <table id="resultado">
     <thead></thead>
     <tbody></tbody>
   </table>
 
-  <canvas id="grafico"></canvas>
-<canvas id="graficoFlutuacao" height="450" style="margin-top:30px; max-width:800px; display:block; margin-left:auto; margin-right:auto;"></canvas>
+  <div style="text-align: center; margin-top: 20px;">
+    <button id="btnPesquisarFornecedores" class="btn-fornecedores" onclick="pesquisarFornecedoresSelecionados()">
+      Pesquisar Fornecedores
+    </button>
+  </div>
 
+  <canvas id="grafico"></canvas>
+  <canvas id="graficoFlutuacao" height="450" style="margin-top:30px; max-width:800px; display:block; margin-left:auto; margin-right:auto;"></canvas>
 
   <div style="text-align:center; margin-top:10px;">
     <button class="btn-action" onclick="salvarPDF()">Salvar em PDF</button>
@@ -251,10 +370,13 @@ Verlaz buscar fornecedores em 1 clique. Clique no seu País de Interesse
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   <script>
+    let tipoAtual = "Importação";
+    let paisesSelecionados = [];
+
     function iniciarBusca(tipo) {
+      tipoAtual = tipo;
       const loading = document.getElementById("loading");
       const text = document.getElementById("loadingText");
       text.innerText = tipo === "Exportação" ? 
@@ -269,417 +391,309 @@ Verlaz buscar fornecedores em 1 clique. Clique no seu País de Interesse
 
     function buscar(tipo) {
       const ncm = document.getElementById("ncm").value || "";
+      const descAPI = {
+        "61103000": "Suéteres, pulôveres e artigos semelhantes, de fibras sintéticas ou artificiais",
+        "32041990": "Outros corantes orgânicos sintéticos"
+      };
+      const desc = descAPI[ncm] || "Descrição não encontrada";
       
-  document.getElementById("descNcmResult").innerText = `Resultados para NCM ${ncm}`;
-  document.getElementById("ncm_card").innerText = ncm;
-  
-document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
-document.getElementById("verlazAviso").style.display = tipo === "Importação" ? "block" : "none";
+      document.getElementById("descNcmResult").innerText = `Resultados para NCM ${ncm}`;
+      document.getElementById("ncm_card").innerText = ncm;
+      
+      document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
+      document.getElementById("verlazAviso").style.display = tipo === "Importação" ? "block" : "none";
 
+      document.getElementById("descTexto").innerText = desc;
 
       const table = document.getElementById("resultado");
       const thead = table.querySelector("thead");
       const tbody = table.querySelector("tbody");
       const ctx = document.getElementById("grafico").getContext("2d");
+
       tbody.innerHTML = "";
+      
+      // Cabeçalho da tabela com checkbox apenas para importação
       thead.innerHTML = tipo === "Importação" ? `
         <tr>
+          <th class="checkbox-col">Selecionar</th>
           <th>País</th><th>FOB</th><th>CIF</th><th>Qtd</th><th>Un</th><th>Unit FOB</th><th>Unit CIF</th><th>FOB/Kg</th>
         </tr>` : `
         <tr>
           <th>País</th><th>FOB</th><th>Qtd</th><th>Un</th><th>Unit FOB</th>
         </tr>`;
+
       const dados = tipo === "Importação" ? [
         {pais:"China",fob:5000000,cif:5200000,qtd:10000,un:"TON"},
-        {pais:"Espanha",fob:3000000,cif:3100000,qtd:7000,un:"TON"}
+        {pais:"Espanha",fob:3000000,cif:3100000,qtd:7000,un:"TON"},
+        {pais:"Alemanha",fob:2500000,cif:2600000,qtd:5000,un:"TON"}
       ] : [
         {pais:"China",fob:4000000,qtd:9000,un:"TON"},
         {pais:"Espanha",fob:2500000,qtd:6000,un:"TON"}
       ];
+
       dados.forEach(d => {
-        const query = encodeURIComponent(`fornecedores ${ncm} ${d.pais} site`);
-        const link = `<a href="https://www.google.com/search?q=${query}" target="_blank">${d.pais}</a>`;
         const row = document.createElement("tr");
-        row.innerHTML = tipo==="Importação"?
-        `<td>${link}</td><td>${d.fob}</td><td>${d.cif}</td><td>${d.qtd}</td><td>${d.un}</td>
-        <td>${(d.fob/d.qtd).toFixed(2)}</td><td>${(d.cif/d.qtd).toFixed(2)}</td><td>${(d.fob/(d.qtd*1000)).toFixed(2)}</td>`:
-        `<td>${link}</td><td>${d.fob}</td><td>${d.qtd}</td><td>${d.un}</td><td>${(d.fob/d.qtd).toFixed(2)}</td>`;
+        if (tipo === "Importação") {
+          row.innerHTML = `
+            <td class="checkbox-col">
+              <input type="checkbox" onchange="atualizarSelecaoPaises()" data-pais="${d.pais}">
+            </td>
+            <td>${d.pais}</td>
+            <td>${d.fob}</td>
+            <td>${d.cif}</td>
+            <td>${d.qtd}</td>
+            <td>${d.un}</td>
+            <td>${(d.fob/d.qtd).toFixed(2)}</td>
+            <td>${(d.cif/d.qtd).toFixed(2)}</td>
+            <td>${(d.fob/(d.qtd*1000)).toFixed(2)}</td>`;
+        } else {
+          row.innerHTML = `
+            <td>${d.pais}</td>
+            <td>${d.fob}</td>
+            <td>${d.qtd}</td>
+            <td>${d.un}</td>
+            <td>${(d.fob/d.qtd).toFixed(2)}</td>`;
+        }
         tbody.appendChild(row);
       });
-      if(window.myChart){window.myChart.destroy();}
-      window.myChart=new Chart(ctx,{type:"bar",data:{
-        labels:dados.map(d=>d.pais),
-        datasets:[{label:"Valor FOB (US$)",data:dados.map(d=>d.fob),backgroundColor:"#000"}]
-      },options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+
+      // Configurar ordenação das colunas
+      const headers = thead.querySelectorAll("th");
+      let sortState = {};
+      headers.forEach((header, index) => {
+        if (header.classList.contains('checkbox-col')) return;
+        
+        sortState[index] = 'desc';
+        header.onclick = () => {
+          const rows = Array.from(tbody.querySelectorAll("tr"));
+          const sorted = rows.sort((a, b) => {
+            const aText = a.children[index].textContent.replace(/[^\d.-]/g, '');
+            const bText = b.children[index].textContent.replace(/[^\d.-]/g, '');
+            const dir = sortState[index] === 'asc' ? 1 : -1;
+            return (parseFloat(aText) - parseFloat(bText)) * dir;
+          });
+          sortState[index] = sortState[index] === 'asc' ? 'desc' : 'asc';
+          headers.forEach(h => h.innerText = h.innerText.replace(/[↑↓]/g, '⇅'));
+          header.innerText = header.innerText.replace('⇅', sortState[index] === 'asc' ? ' ↑' : ' ↓');
+          tbody.innerHTML = "";
+          sorted.forEach(r => tbody.appendChild(r));
+        };
+      });
+
+      // Gráfico de barras
+      if (window.myChart) {
+        window.myChart.destroy();
+      }
+      window.myChart = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: dados.map(d => d.pais),
+          datasets: [{
+            label: "Valor FOB (US$)",
+            data: dados.map(d => d.fob),
+            backgroundColor: "#000"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // Gráfico de flutuação
+      const ctxFlutuacao = document.getElementById("graficoFlutuacao").getContext("2d");
+      if (window.myLineChart) { window.myLineChart.destroy(); }
+
+      window.myLineChart = new Chart(ctxFlutuacao, {
+        type: "line",
+        data: {
+          labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
+          datasets: [
+            {
+              label: "China",
+              data: [3.40, 3.50, 3.48, 3.60, 3.55, 3.52],
+              borderColor: "red",
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: "Espanha",
+              data: [4.10, 4.20, 4.25, 4.30, 4.28, 4.22],
+              borderColor: "blue",
+              fill: false,
+              tension: 0.3
+            },
+            {
+              label: "Alemanha",
+              data: [5.00, 5.05, 5.10, 5.20, 5.18, 5.15],
+              borderColor: "green",
+              fill: false,
+              tension: 0.3
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { position: "top" },
+            title: {
+              display: true,
+              text: "Flutuação do Preço Unitário no Período (US$)"
+            }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+
+      // Resetar seleção de países
+      paisesSelecionados = [];
+      atualizarBotaoFornecedores();
+    }
+
+    function atualizarSelecaoPaises() {
+      if (tipoAtual !== "Importação") return;
+      
+      const checkboxes = document.querySelectorAll('input[type="checkbox"][data-pais]');
+      paisesSelecionados = [];
+      
+      checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+          paisesSelecionados.push(checkbox.getAttribute('data-pais'));
+        }
+      });
+      
+      atualizarBotaoFornecedores();
+    }
+
+    function atualizarBotaoFornecedores() {
+      const btn = document.getElementById('btnPesquisarFornecedores');
+      if (tipoAtual === "Importação" && paisesSelecionados.length > 0) {
+        btn.classList.add('ativo');
+      } else {
+        btn.classList.remove('ativo');
+      }
+    }
+
+    function pesquisarFornecedoresSelecionados() {
+      if (paisesSelecionados.length === 0) {
+        alert('Por favor, selecione pelo menos um país para pesquisar fornecedores.');
+        return;
+      }
+
+      const ncm = document.getElementById("ncm").value || "NCM";
+      
+      // Tela de carregamento
+      const overlay = document.createElement("div");
+      overlay.id = "overlayBusca";
+      overlay.style.position = "fixed";
+      overlay.style.top = 0;
+      overlay.style.left = 0;
+      overlay.style.width = "100%";
+      overlay.style.height = "100%";
+      overlay.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+      overlay.style.zIndex = 9999;
+      overlay.style.display = "flex";
+      overlay.style.flexDirection = "column";
+      overlay.style.alignItems = "center";
+      overlay.style.justifyContent = "center";
+      overlay.innerHTML = `
+        <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Rotating_earth_%28large%29.gif"
+             style="width:180px; animation: blink 1s infinite;">
+        <p style="font-size:22px; font-weight:bold; margin-top:20px;">Verlaz está buscando fornecedores nos países selecionados...</p>
+      `;
+      document.body.appendChild(overlay);
+
+      setTimeout(() => {
+        overlay.remove();
+        mostrarFornecedoresPorPais(paisesSelecionados, ncm);
+      }, 4000);
+    }
+
+    function mostrarFornecedoresPorPais(paises, ncm) {
+      // Dados de exemplo de fornecedores por país
+      const fornecedoresPorPais = {
+        "China": [
+          { nome:'Shanghai Trading Co.', site:'https://www.shanghaitrading.com/', whatsapp:'+86 21 6234-5678', email:'info@shanghaitrading.com' },
+          { nome:'Beijing Export Ltd.', site:'https://www.beijingexport.com/', whatsapp:'+86 10 8765-4321', email:'sales@beijingexport.com' },
+          { nome:'Guangzhou Manufacturers', site:'https://www.gzmanufacturers.com/', whatsapp:'+86 20 1234-5678', email:'contact@gzmanufacturers.com' }
+        ],
+        "Espanha": [
+          { nome:'Madrid Textiles S.A.', site:'https://www.madridtextiles.es/', whatsapp:'+34 91 123-4567', email:'info@madridtextiles.es' },
+          { nome:'Barcelona Export Co.', site:'https://www.barcelonaexport.es/', whatsapp:'+34 93 987-6543', email:'ventas@barcelonaexport.es' },
+          { nome:'Valencia Trading', site:'https://www.valenciatrading.es/', whatsapp:'+34 96 456-7890', email:'comercial@valenciatrading.es' }
+        ],
+        "Alemanha": [
+          { nome:'Berlin Industries GmbH', site:'https://www.berlinindustries.de/', whatsapp:'+49 30 123-4567', email:'info@berlinindustries.de' },
+          { nome:'Munich Export AG', site:'https://www.munichexport.de/', whatsapp:'+49 89 987-6543', email:'sales@munichexport.de' },
+          { nome:'Hamburg Trading Ltd.', site:'https://www.hamburgtrading.de/', whatsapp:'+49 40 456-7890', email:'contact@hamburgtrading.de' }
+        ]
+      };
+
+      // Limpar a página e criar nova estrutura
+      document.body.innerHTML = "";
+      
+      const container = document.createElement("div");
+      container.className = "fornecedores-container";
+
+      // Título principal
+      const titulo = document.createElement("h1");
+      titulo.textContent = `Fornecedores de ${ncm}`;
+      titulo.style.textAlign = "center";
+      titulo.style.marginBottom = "30px";
+      container.appendChild(titulo);
+
+      // Criar seções por país
+      paises.forEach(pais => {
+        const paisSection = document.createElement("div");
+        paisSection.className = "pais-section";
+
+        const paisTitle = document.createElement("div");
+        paisTitle.className = "pais-title";
+        paisTitle.textContent = pais;
+        paisSection.appendChild(paisTitle);
+
+        const fornecedoresGrid = document.createElement("div");
+        fornecedoresGrid.className = "fornecedores-grid";
+
+        const fornecedores = fornecedoresPorPais[pais] || [];
+        fornecedores.forEach(fornecedor => {
+          const card = document.createElement("div");
+          card.className = "fornecedor-card";
+          card.innerHTML = `
+            <div class="fornecedor-nome">${fornecedor.nome}</div>
+            <div class="fornecedor-info"><strong>País:</strong> ${pais}</div>
+            <div class="fornecedor-info"><strong>Site:</strong> <a href="${fornecedor.site}" target="_blank">${fornecedor.site}</a></div>
+            <div class="fornecedor-info"><strong>WhatsApp:</strong> ${fornecedor.whatsapp}</div>
+            <div class="fornecedor-info"><strong>Email:</strong> ${fornecedor.email}</div>
+          `;
+          fornecedoresGrid.appendChild(card);
+        });
+
+        paisSection.appendChild(fornecedoresGrid);
+        container.appendChild(paisSection);
+      });
+
+      // Botões de ação
+      const botoesDiv = document.createElement("div");
+      botoesDiv.className = "botoes-fornecedores";
+      botoesDiv.innerHTML = `
+        <button class="btn-voltar" onclick="location.reload()">← Voltar aos Resultados</button>
+        <button class="btn-contratar" onclick="alert('Um agente Verlaz entrará em contato com você em breve!')">
+          🤝 Contratar um Agente Verlaz para me ajudar!
+        </button>
+      `;
+      container.appendChild(botoesDiv);
+
+      document.body.appendChild(container);
     }
 
     function salvarPDF() {
       html2pdf().from(document.body).save('relatorio_ncm.pdf');
     }
   </script>
-
-<script>
-function iniciarBusca(tipo) {
-  const loading = document.getElementById("loading");
-  const text = document.getElementById("loadingText");
-  text.innerText = tipo === "Exportação"
-    ? "Buscando os países que mais compram do Brasil, volume exportado e preço unitário médio vendido."
-    : "Buscando os países que mais venderam para o Brasil, volume importado e preço unitário médio pago.";
-  loading.style.display = "block";
-  setTimeout(() => {
-    loading.style.display = "none";
-    buscar(tipo);
-  }, 3500);
-}
-
-function buscar(tipo) {
-  const ncm = document.getElementById("ncm").value || "";
-  const descAPI = {
-    "61103000": "Suéteres, pulôveres e artigos semelhantes, de fibras sintéticas ou artificiais",
-    "32041990": "Outros corantes orgânicos sintéticos"
-  };
-  const desc = descAPI[ncm] || "Descrição não encontrada";
-  
-  document.getElementById("descNcmResult").innerText = `Resultados para NCM ${ncm}`;
-  document.getElementById("ncm_card").innerText = ncm;
-  
-document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
-document.getElementById("verlazAviso").style.display = tipo === "Importação" ? "block" : "none";
-
-
-  document.getElementById("descTexto").innerText = desc;
-
-  const table = document.getElementById("resultado");
-  const thead = table.querySelector("thead");
-  const tbody = table.querySelector("tbody");
-  const ctx = document.getElementById("grafico").getContext("2d");
-
-  tbody.innerHTML = "";
-  thead.innerHTML = tipo === "Importação" ? `
-    <tr>
-      <th>País</th><th>FOB</th><th>CIF</th><th>Qtd</th><th>Un</th><th>Unit FOB</th><th>Unit CIF</th><th>FOB/Kg</th>
-    </tr>` : `
-    <tr>
-      <th>País</th><th>FOB</th><th>Qtd</th><th>Un</th><th>Unit FOB</th>
-    </tr>`;
-
-  const dados = tipo === "Importação" ? [
-    {pais:"China",fob:5000000,cif:5200000,qtd:10000,un:"TON"},
-    {pais:"Espanha",fob:3000000,cif:3100000,qtd:7000,un:"TON"}
-  ] : [
-    {pais:"China",fob:4000000,qtd:9000,un:"TON"},
-    {pais:"Espanha",fob:2500000,qtd:6000,un:"TON"}
-  ];
-
-  dados.forEach(d => {
-    const query = encodeURIComponent(`fornecedores ${ncm} ${d.pais} site`);
-    const link = `<a href="https://www.google.com/search?q=${query}" target="_blank">${d.pais}</a>`;
-    const row = document.createElement("tr");
-    row.innerHTML = tipo === "Importação" ?
-      `<td>${link}</td><td>${d.fob}</td><td>${d.cif}</td><td>${d.qtd}</td><td>${d.un}</td>
-      <td>${(d.fob/d.qtd).toFixed(2)}</td><td>${(d.cif/d.qtd).toFixed(2)}</td><td>${(d.fob/(d.qtd*1000)).toFixed(2)}</td>` :
-      `<td>${link}</td><td>${d.fob}</td><td>${d.qtd}</td><td>${d.un}</td><td>${(d.fob/d.qtd).toFixed(2)}</td>`;
-    tbody.appendChild(row);
-  });
-
-  const headers = thead.querySelectorAll("th");
-  let sortState = {};
-  headers.forEach((header, index) => {
-    sortState[index] = 'desc';
-    header.onclick = () => {
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-      const sorted = rows.sort((a, b) => {
-        const aText = a.children[index].textContent.replace(/[^\d.-]/g, '');
-        const bText = b.children[index].textContent.replace(/[^\d.-]/g, '');
-        const dir = sortState[index] === 'asc' ? 1 : -1;
-        return (parseFloat(aText) - parseFloat(bText)) * dir;
-      });
-      sortState[index] = sortState[index] === 'asc' ? 'desc' : 'asc';
-      headers.forEach(h => h.innerText = h.innerText.replace(/[↑↓]/g, '⇅'));
-      header.innerText = header.innerText.replace('⇅', sortState[index] === 'asc' ? ' ↑' : ' ↓');
-      tbody.innerHTML = "";
-      sorted.forEach(r => tbody.appendChild(r));
-    };
-  });
-
-  if (window.myChart) {
-    window.myChart.destroy();
-  }
-  window.myChart = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: dados.map(d => d.pais),
-      datasets: [{
-        label: "Valor FOB (US$)",
-        data: dados.map(d => d.fob),
-        backgroundColor: "#000"
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: { legend: { display: false } },
-      scales: { y: { beginAtZero: true } }
-    }
-  });
-
-  
-  const ctxFlutuacao = document.getElementById("graficoFlutuacao").getContext("2d");
-  if (window.myLineChart) { window.myLineChart.destroy(); }
-
-  const gradientChina = ctxFlutuacao.createLinearGradient(0, 0, 0, 400);
-  gradientChina.addColorStop(0, "rgba(255, 99, 132, 0.5)");
-  gradientChina.addColorStop(1, "rgba(255, 99, 132, 0.1)");
-
-  const gradientEspanha = ctxFlutuacao.createLinearGradient(0, 0, 0, 400);
-  gradientEspanha.addColorStop(0, "rgba(54, 162, 235, 0.5)");
-  gradientEspanha.addColorStop(1, "rgba(54, 162, 235, 0.1)");
-
-  const gradientAlemanha = ctxFlutuacao.createLinearGradient(0, 0, 0, 400);
-  gradientAlemanha.addColorStop(0, "rgba(75, 192, 192, 0.5)");
-  gradientAlemanha.addColorStop(1, "rgba(75, 192, 192, 0.1)");
-
-  window.myLineChart = new Chart(ctxFlutuacao, {
-    type: "line",
-    data: {
-      labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
-      datasets: [
-        {
-          label: "China",
-          data: [3.40, 3.50, 3.48, 3.60, 3.55, 3.52],
-          borderColor: "rgba(255, 99, 132, 1)",
-          backgroundColor: gradientChina,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        },
-        {
-          label: "Espanha",
-          data: [4.10, 4.20, 4.25, 4.30, 4.28, 4.22],
-          borderColor: "rgba(54, 162, 235, 1)",
-          backgroundColor: gradientEspanha,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        },
-        {
-          label: "Alemanha",
-          data: [5.00, 5.05, 5.10, 5.20, 5.18, 5.15],
-          borderColor: "rgba(75, 192, 192, 1)",
-          backgroundColor: gradientAlemanha,
-          fill: true,
-          tension: 0.4,
-          pointRadius: 5,
-          pointHoverRadius: 7
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            font: {
-              size: 14
-            }
-          }
-        },
-        title: {
-          display: true,
-          text: "Flutuação do Preço Unitário no Período (US$)",
-          font: {
-            size: 20
-          }
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false,
-          padding: 10,
-          bodyFont: { size: 14 },
-          titleFont: { weight: 'bold' }
-        }
-      },
-      interaction: {
-        mode: 'nearest',
-        axis: 'x',
-        intersect: false
-      },
-      scales: {
-        y: {
-          beginAtZero: false,
-          title: {
-            display: true,
-            text: 'US$ por Unidade'
-          }
-        },
-        x: {
-          title: {
-            display: true,
-            text: 'Mês'
-          }
-        }
-      }
-    }
-  });
-
-  if (window.myLineChart) { window.myLineChart.destroy(); }
-  window.myLineChart = new Chart(ctxFlutuacao, {
-    type: "line",
-    data: {
-      labels: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun"],
-      datasets: [
-        {
-          label: "China",
-          data: [3.40, 3.50, 3.48, 3.60, 3.55, 3.52],
-          borderColor: "red",
-          fill: false,
-          tension: 0.3
-        },
-        {
-          label: "Espanha",
-          data: [4.10, 4.20, 4.25, 4.30, 4.28, 4.22],
-          borderColor: "blue",
-          fill: false,
-          tension: 0.3
-        },
-        {
-          label: "Alemanha",
-          data: [5.00, 5.05, 5.10, 5.20, 5.18, 5.15],
-          borderColor: "green",
-          fill: false,
-          tension: 0.3
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: "top" },
-        title: {
-          display: true,
-          text: "Flutuação do Preço Unitário no Período (US$)"
-        }
-      },
-      scales: {
-        y: { beginAtZero: false }
-      }
-    }
-  });
-
-}
-
-function salvarPDF() {
-  html2pdf().from(document.body).save('relatorio_ncm.pdf');
-}
-</script>
-
-<script>
-function simularBuscaFornecedor(pais, ncm) {
-  const overlay = document.createElement("div");
-  overlay.id = "overlayBusca";
-  overlay.style.position = "fixed";
-  overlay.style.top = 0;
-  overlay.style.left = 0;
-  overlay.style.width = "100%";
-  overlay.style.height = "100%";
-  overlay.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
-  overlay.style.zIndex = 9999;
-  overlay.style.display = "flex";
-  overlay.style.flexDirection = "column";
-  overlay.style.alignItems = "center";
-  overlay.style.justifyContent = "center";
-  overlay.innerHTML = `
-    <img src="https://upload.wikimedia.org/wikipedia/commons/5/55/Rotating_earth_%28large%29.gif"
-         style="width:180px; animation: blink 1s infinite;">
-    <p style="font-size:22px; font-weight:bold; margin-top:20px;">Verlaz está buscando fornecedores...</p>
-  `;
-  document.body.appendChild(overlay);
-
-  setTimeout(() => {
-    overlay.remove();
-    mostrarFornecedores(pais, ncm);
-  }, 4000);
-}
-
-function mostrarFornecedores(pais, ncm) {
-  const fornecedores = [
-    { pais, nome:'Cavabianca', site:'https://www.cavabianca.com.ar/', whatsapp:'--', email:'info@cavabianca.com.ar' },
-    { pais, nome:'Pistacuy', site:'https://www.pistacuy.com.ar/', whatsapp:'+54 11 5218‑5656', email:'--' },
-    { pais, nome:'Finca Richeze', site:'https://www.fincaricheze.com/', whatsapp:'+54 9 2645 20‑7102', email:'info@fincaricheze.com' },
-    { pais, nome:'Meló Agroindustrias', site:'https://meloagroindustrias.com/', whatsapp:'+54 264 425‑0240', email:'--' }
-  ];
-
-  document.body.innerHTML = "";
-  const section = document.createElement("section");
-
-  const btn = document.createElement("button");
-  btn.textContent = "← Voltar";
-  btn.style = "margin: 20px; padding: 10px 15px; font-size: 14px; cursor: pointer;";
-  btn.onclick = () => location.reload();
-  section.appendChild(btn);
-
-  const title = document.createElement("h2");
-  title.textContent = `Fornecedores de ${ncm} na ${pais}`;
-  title.style.textAlign = "center";
-  section.appendChild(title);
-
-  const wrapper = document.createElement("div");
-  wrapper.style = "display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 20px;";
-
-  fornecedores.forEach(f => {
-    const card = document.createElement("div");
-    card.style = "border: 1px solid #ccc; border-radius: 8px; padding: 15px; width: 260px; background: #fff;";
-    card.innerHTML = `
-      <h3>${f.nome}</h3>
-      <p><strong>País:</strong> ${f.pais}</p>
-      <p><strong>Site:</strong> <a href="${f.site}" target="_blank">${f.site}</a></p>
-      <p><strong>WhatsApp:</strong> ${f.whatsapp}</p>
-      <p><strong>Email:</strong> ${f.email}</p>
-    `;
-    wrapper.appendChild(card);
-  });
-
-  section.appendChild(wrapper);
-  document.body.appendChild(section);
-
-  const botoes = document.createElement("div");
-  botoes.style = "text-align:center; margin-top:30px;";
-  botoes.innerHTML = `
-    <button onclick="location.reload()" style="padding:10px 15px; margin:10px; cursor:pointer;">← Voltar</button>
-    <button onclick="alert('Um agente Verlaz entrará em contato com você!')" style="padding:10px 15px; margin:10px; background-color:green; color:white; cursor:pointer;">Contratar um Agente Verlaz para me ajudar!</button>
-  `;
-  document.body.appendChild(botoes);
-
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  let tipoAtual = "Importação";
-  const tabela = document.getElementById("resultado");
-  if (!tabela) return;
-
-  // detecta o tipo de busca atual
-  const btnImport = document.querySelector(".btn-import");
-  btnImport.addEventListener("click", () => tipoAtual = "Importação");
-  const btnExport = document.querySelector(".btn-export");
-  btnExport.addEventListener("click", () => tipoAtual = "Exportação");
-
-  tabela.addEventListener("click", e => {
-    if (e.target.tagName === "A" && tipoAtual === "Importação") {
-      e.preventDefault();
-      const pais = e.target.textContent.trim();
-      const ncm = document.getElementById("ncm")?.value || "Uvas Passas";
-      simularBuscaFornecedor(pais, ncm);
-    }
-  });
-});
-</script>
-
-<style>
-@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0;} }
-</style>
-
 </body>
 </html>
+

@@ -223,7 +223,19 @@
   </div>
 </div>
 
-  <table id="resultado">
+  
+<div id="verlazAviso" style="display:none; background-color:#c00; color:white; text-align:center;
+padding:10px; font-size:16px; font-weight:bold; margin-top:20px; animation: blinkSlow 1.5s infinite;">
+Verlaz buscar fornecedores em 1 clique. Clique no seu País de Interesse
+</div>
+<style>
+@keyframes blinkSlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+</style>
+
+<table id="resultado">
     <thead></thead>
     <tbody></tbody>
   </table>
@@ -260,7 +272,10 @@
       
   document.getElementById("descNcmResult").innerText = `Resultados para NCM ${ncm}`;
   document.getElementById("ncm_card").innerText = ncm;
-  document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
+  
+document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
+document.getElementById("verlazAviso").style.display = tipo === "Importação" ? "block" : "none";
+
 
       const table = document.getElementById("resultado");
       const thead = table.querySelector("thead");
@@ -327,7 +342,10 @@ function buscar(tipo) {
   
   document.getElementById("descNcmResult").innerText = `Resultados para NCM ${ncm}`;
   document.getElementById("ncm_card").innerText = ncm;
-  document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
+  
+document.getElementById("cardsResultado").style.display = tipo === "Importação" ? "block" : "none";
+document.getElementById("verlazAviso").style.display = tipo === "Importação" ? "block" : "none";
+
 
   document.getElementById("descTexto").innerText = desc;
 
@@ -626,6 +644,15 @@ function mostrarFornecedores(pais, ncm) {
 
   section.appendChild(wrapper);
   document.body.appendChild(section);
+
+  const botoes = document.createElement("div");
+  botoes.style = "text-align:center; margin-top:30px;";
+  botoes.innerHTML = `
+    <button onclick="location.reload()" style="padding:10px 15px; margin:10px; cursor:pointer;">← Voltar</button>
+    <button onclick="alert('Um agente Verlaz entrará em contato com você!')" style="padding:10px 15px; margin:10px; background-color:green; color:white; cursor:pointer;">Contratar um Agente Verlaz para me ajudar!</button>
+  `;
+  document.body.appendChild(botoes);
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
